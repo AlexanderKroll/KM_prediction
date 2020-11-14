@@ -1,6 +1,3 @@
-/datasets/mol-files/
-/datasets/mol_feature_vectors/
-
 #Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
