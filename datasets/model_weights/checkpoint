@@ -1,0 +1,2 @@
+model_checkpoint_path: "GCN_D100_with_MW"
+all_model_checkpoint_paths: "GCN_D100_with_MW"
