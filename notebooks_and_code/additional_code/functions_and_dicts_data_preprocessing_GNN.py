@@ -207,6 +207,35 @@ def create_input_and_output_data(df, print_error = False):
     return([np.array(XE), np.array(X), np.array(A), np.array(extras), np.array(FunD), np.array(Y)])
 
 
+def create_input_data_for_predictions(df, print_error = False):
+    XE = ();
+    X = ();
+    A = ();
+    extras= ();
+    FunD = ();
+    for ind in df.index:
+        KEGG_ID = df["KEGG ID"][ind]
+        logP = df["LogP"][ind]
+        funD = df["FunD"][ind]
+        mw = np.log10(df["MW"][ind])
+        x = create_atom_feature_matrix(mol_name = KEGG_ID, N =70)
+        if not x is None  and not pd.isnull(mw) and not pd.isnull(logP):
+            a,e = create_bond_feature_matrix(mol_name = KEGG_ID, N =70)
+            a = np.reshape(a, (N,N,1))
+            xe = concatenate_X_and_E(x, e)
+            ex = np.array([mw, logP])
+            XE = XE + (xe,);
+            X = X + (x,);
+            A = A + (a,);
+            extras = extras + (ex,);
+            FunD = FunD + (funD,);
+        else:
+            if print_error:
+                print("Could not create input for KEGG ID %s" %KEGG_ID)            
+            
+    return([np.array(XE), np.array(X), np.array(A), np.array(extras), np.array(FunD)])
+
+
 def download_mol_files():
     """
     This function downloads all available MDL Molfiles for alle substrate with a KEGG Compound ID between 0 and 22500.    
