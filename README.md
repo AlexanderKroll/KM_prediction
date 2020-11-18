@@ -1,5 +1,5 @@
 # Description
-Four Jupyter notebookes with code to reproduce the results and plots of the paper "Prediction of Michaelis constants $K_M$ from structural features".
+This repository contains four Jupyter notebookes with code to reproduce the results and plots of the paper "Prediction of Michaelis constants KM from structural features".
 
 ## Requirements
 
