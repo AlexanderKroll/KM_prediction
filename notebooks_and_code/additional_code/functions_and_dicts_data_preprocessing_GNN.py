@@ -3,6 +3,7 @@ import pandas as pd
 import pickle
 from rdkit import Chem
 import os
+from os.path import join
 from directory_infomation import *
 
 # Model parameters for the GNN:
@@ -11,6 +12,24 @@ F1 = 32         # feature dimensionality of atoms
 F2 = 10         # feature dimensionality of bonds
 F = F1+F2
 D = 100
+
+
+
+def calculate_and_save_input_matrixes(sample_ID, df, save_folder = join(datasets_dir, "GNN_input_data")):
+    ind = int(sample_ID.split("_")[1])
+    
+    molecule_ID = df["KEGG ID"][ind]
+    y = df["log10_KM"][ind]
+    extras = np.array([df["MW"][ind], df["LogP"][ind]])
+        
+        
+    [XE, X, A] = create_input_data_for_GNN_for_substrates(substrate_ID = molecule_ID, print_error=True)
+    if not A is None:
+        np.save(join(save_folder, sample_ID + '_X.npy'), X) #feature matrix of atoms/nodes
+        np.save(join(save_folder, sample_ID + '_XE.npy'), XE) #feature matrix of atoms/nodes and bonds/edges
+        np.save(join(save_folder, sample_ID + '_A.npy'), A) 
+        np.save(join(save_folder, sample_ID + '_y.npy'), y) 
+        np.save(join(save_folder, sample_ID + '_extras.npy'), extras) 
 
 
 def calculate_atom_and_bond_feature_vectors():
@@ -92,27 +111,30 @@ dic_atomic_number = {0.0: np.array([1,0,0,0,0,0,0,0,0,0]), 1.0: np.array([0,0,0,
                      32.0: np.array([0,0,0,0,0,0,0,0,0,1]), 33.0: np.array([0,0,0,0,0,0,0,0,0,1]),
                      34.0: np.array([0,0,0,0,0,0,0,0,0,1]), 35.0: np.array([0,0,0,0,0,0,0,0,1,0]),
                      37.0: np.array([0,0,0,0,0,0,0,0,0,1]), 38.0: np.array([0,0,0,0,0,0,0,0,0,1]),
-                     42.0: np.array([0,0,0,0,0,0,0,0,0,1]), 47.0: np.array([0,0,0,0,0,0,0,0,0,1]),
+                     42.0: np.array([0,0,0,0,0,0,0,0,0,1]), 46.0: np.array([0,0,0,0,0,0,0,0,0,1]),
+                     47.0: np.array([0,0,0,0,0,0,0,0,0,1]),
                      48.0: np.array([0,0,0,0,0,0,0,0,0,1]), 50.0: np.array([0,0,0,0,0,0,0,0,0,1]),
                      51.0: np.array([0,0,0,0,0,0,0,0,0,1]), 52.0: np.array([0,0,0,0,0,0,0,0,0,1]),
                      53.0: np.array([0,0,0,0,0,0,0,0,0,1]), 54.0: np.array([0,0,0,0,0,0,0,0,0,1]),
-                     56.0: np.array([0,0,0,0,0,0,0,0,0,1]), 74.0: np.array([0,0,0,0,0,0,0,0,0,1]),
+                     56.0: np.array([0,0,0,0,0,0,0,0,0,1]), 57.0: np.array([0,0,0,0,0,0,0,0,0,1]),
+                     74.0: np.array([0,0,0,0,0,0,0,0,0,1]),
                      78.0: np.array([0,0,0,0,0,0,0,0,0,1]), 79.0: np.array([0,0,0,0,0,0,0,0,0,1]),
                      80.0: np.array([0,0,0,0,0,0,0,0,0,1]), 81.0: np.array([0,0,0,0,0,0,0,0,0,1]),
                      82.0: np.array([0,0,0,0,0,0,0,0,0,1]), 83.0: np.array([0,0,0,0,0,0,0,0,0,1]),
                      86.0: np.array([0,0,0,0,0,0,0,0,0,1]), 88.0: np.array([0,0,0,0,0,0,0,0,0,1]),
                      90.0: np.array([0,0,0,0,0,0,0,0,0,1]), 94.0: np.array([0,0,0,0,0,0,0,0,0,1])}
 
-#There are only 5 atoms in the whole data set with 6 bonds and no atoms with 5 bonds. Therefore I lump 4 and 6 bonds
+#There are only 5 atoms in the whole data set with 6 bonds and no atoms with 5 bonds. Therefore I lump 4, 5 and 6 bonds
 #together
 dic_num_bonds = {0.0: np.array([0,0,0,0,1]), 1.0: np.array([0,0,0,1,0]),
                  2.0: np.array([0,0,1,0,0]), 3.0: np.array([0,1,0,0,0]),
-                 4.0: np.array([1,0,0,0,0]), 6.0: np.array([1,0,0,0,0])}
+                 4.0: np.array([1,0,0,0,0]), 5.0: np.array([1,0,0,0,0]),
+                 6.0: np.array([1,0,0,0,0])}
 
 #Almost alle charges are -1,0 or 1. Therefore I use only positiv, negative and neutral as features:
 dic_charge = {-4.0: np.array([1,0,0]), -3.0: np.array([1,0,0]),  -2.0: np.array([1,0,0]), -1.0: np.array([1,0,0]),
                0.0: np.array([0,1,0]),  1.0: np.array([0,0,1]),  2.0: np.array([0,0,1]),  3.0: np.array([0,0,1]),
-               4.0: np.array([0,0,1]), 6.0: np.array([0,0,1])}
+               4.0: np.array([0,0,1]), 5.0: np.array([0,0,1]), 6.0: np.array([0,0,1])}
 
 dic_hybrid = {'S': np.array([0,0,0,0,1]), 'SP': np.array([0,0,0,1,0]), 'SP2': np.array([0,0,1,0,0]),
               'SP3': np.array([0,1,0,0,0]), 'SP3D': np.array([1,0,0,0,0]), 'SP3D2': np.array([1,0,0,0,0]),
@@ -121,7 +143,8 @@ dic_hybrid = {'S': np.array([0,0,0,0,1]), 'SP': np.array([0,0,0,1,0]), 'SP2': np
 dic_aromatic = {0.0: np.array([0]), 1.0: np.array([1])}
 
 dic_H_bonds = {0.0: np.array([0,0,0,1]), 1.0: np.array([0,0,1,0]), 2.0: np.array([0,1,0,0]),
-               3.0: np.array([1,0,0,0]), 4.0: np.array([1,0,0,0]), 6.0: np.array([1,0,0,0])}
+               3.0: np.array([1,0,0,0]), 4.0: np.array([1,0,0,0]), 5.0: np.array([1,0,0,0]),
+               6.0: np.array([1,0,0,0])}
 
 dic_chirality = {'CHI_TETRAHEDRAL_CCW': np.array([1,0,0]), 'CHI_TETRAHEDRAL_CW': np.array([0,1,0]),
                  'CHI_UNSPECIFIED': np.array([0,0,1])}
@@ -174,66 +197,7 @@ def concatenate_X_and_E(X, E, N = 70, F= 32+10):
             XE[v,w, :] = np.concatenate((x_v, E[v,w,:]))
     return(XE)
 
-    
-def create_input_and_output_data(df, print_error = False):
-    XE = ();
-    X = ();
-    A = ();
-    extras= ();
-    FunD = ();
-    Y = ();
-    for ind in df.index:
-        KEGG_ID = df["KEGG ID"][ind]
-        y = df["log10_Km"][ind]
-        logP = df["LogP"][ind]
-        funD = df["FunD"][ind]
-        mw = np.log10(df["MW"][ind])
-        x = create_atom_feature_matrix(mol_name = KEGG_ID, N =70)
-        if not x is None and not pd.isnull(y) and not pd.isnull(mw) and not pd.isnull(logP):
-            a,e = create_bond_feature_matrix(mol_name = KEGG_ID, N =70)
-            a = np.reshape(a, (N,N,1))
-            xe = concatenate_X_and_E(x, e)
-            ex = np.array([mw, logP])
-            XE = XE + (xe,);
-            X = X + (x,);
-            A = A + (a,);
-            extras = extras + (ex,);
-            FunD = FunD + (funD,);
-            Y = Y + (y,);
-        else:
-            if print_error:
-                print("Could not create input for KEGG ID %s" %KEGG_ID)            
-            
-    return([np.array(XE), np.array(X), np.array(A), np.array(extras), np.array(FunD), np.array(Y)])
 
-
-def create_input_data_for_predictions(df, print_error = False):
-    XE = ();
-    X = ();
-    A = ();
-    extras= ();
-    FunD = ();
-    for ind in df.index:
-        KEGG_ID = df["KEGG ID"][ind]
-        logP = df["LogP"][ind]
-        funD = df["FunD"][ind]
-        mw = np.log10(df["MW"][ind])
-        x = create_atom_feature_matrix(mol_name = KEGG_ID, N =70)
-        if not x is None  and not pd.isnull(mw) and not pd.isnull(logP):
-            a,e = create_bond_feature_matrix(mol_name = KEGG_ID, N =70)
-            a = np.reshape(a, (N,N,1))
-            xe = concatenate_X_and_E(x, e)
-            ex = np.array([mw, logP])
-            XE = XE + (xe,);
-            X = X + (x,);
-            A = A + (a,);
-            extras = extras + (ex,);
-            FunD = FunD + (funD,);
-        else:
-            if print_error:
-                print("Could not create input for KEGG ID %s" %KEGG_ID)            
-            
-    return([np.array(XE), np.array(X), np.array(A), np.array(extras), np.array(FunD)])
 
 
 def download_mol_files():
@@ -257,3 +221,79 @@ def download_mol_files():
             f= open(datasets_dir + "mol-files/" +kegg_id + ".mol","wb")
             f.write(r.content)
             f.close()
+            
+            
+def create_input_data_for_GNN_for_substrates(substrate_ID, print_error = False):
+    try:
+        x = create_atom_feature_matrix(mol_name = substrate_ID, N =N)
+        if not x is None: 
+            a,e = create_bond_feature_matrix(mol_name = substrate_ID, N =N)
+            a = np.reshape(a, (N,N,1))
+            xe = concatenate_X_and_E(x, e, N = 70)
+            return([np.array(xe), np.array(x), np.array(a)])
+        else:
+            if print_error:
+                print("Could not create input for substrate ID %s" %substrate_ID)      
+            return(None, None, None)
+    except:
+        return(None, None, None)
+
+        
+input_data_folder = join(datasets_dir, "GNN_input_data")   
+
+def get_representation_input(cid_list):
+    XE = ();
+    X = ();
+    A = ();
+    UniRep = ();
+    extras = ();
+    # Generate data
+    for cid in cid_list:
+        try:
+            X = X + (np.load(join(input_data_folder, cid + '_X.npy')), );
+            XE = XE + (np.load(join(input_data_folder, cid + '_XE.npy')), );
+            A = A + (np.load(join(input_data_folder, cid + '_A.npy')), );
+            extras =  extras + (np.load(join(input_data_folder, cid + '_extras.npy')), );
+        except FileNotFoundError: #return zero arrays:
+            X = X + (np.zeros((N,32)), );
+            XE = XE + (np.zeros((N,N,F)), );
+            A = A + (np.zeros((N,N,1)), );
+            extras =  extras + (np.zeros(2), );
+    return(XE, X, A, extras)
+
+input_data_folder = join(datasets_dir, "GNN_input_data") 
+def get_substrate_representations(df, training_set, get_fingerprint_fct):
+    df["GNN FP"] = ""
+    i = 0
+    n = len(df)
+    
+    cid_all = list(df.index)
+    if training_set == True:
+        prefix = "train_"
+    else:
+        prefix = "test_"
+    cid_all = [prefix + str(cid) for cid in cid_all]
+    
+    while i*64 <= n:
+        if (i+1)*64  <= n:
+            XE, X, A, extras = get_representation_input(cid_all[i*64:(i+1)*64])
+            representations = get_fingerprint_fct([np.array(XE), np.array(X),np.array(A),
+                                                   np.array(extras)])[0]
+            df["GNN FP"][i*64:(i+1)*64] = list(representations[:, :52])
+        else:
+            print(i)
+            XE, X, A, extras = get_representation_input(cid_all[-64:])
+            representations = get_fingerprint_fct([np.array(XE), np.array(X),np.array(A), 
+                                                   np.array(extras)])[0]
+            df["GNN FP"][-64:] = list(representations[:, :52])
+        i += 1
+        
+    ### set all GNN FP-entries with no input matrices to np.nan:
+    all_X_matrices = os.listdir(input_data_folder)
+    for ind in df.index:
+        if prefix +str(ind) +"_X.npy" not in all_X_matrices:
+            df["GNN FP"][ind] = np.nan
+    return(df)
+
+
+

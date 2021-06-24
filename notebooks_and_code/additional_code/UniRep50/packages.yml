@@ -1,0 +1,11 @@
+name: tf1.15
+channels:
+  - bioconda
+  - defaults
+dependencies:
+  - numpy==1.18.1
+  - tensorflow==1.15.0
+  - pandas==1.0.1
+  - biopython==1.76
+  - python=3.7
+  - jupyter
