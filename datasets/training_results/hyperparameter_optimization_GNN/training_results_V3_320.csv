@@ -1,0 +1,2 @@
+,batch_size,D,learning_rate,epochs,l2_reg_fc,l2_reg_conv,rho,cv_mse
+0,32.0,100.0,0.1,40.0,1.0,0.01,0.99,0.8965959141734361
