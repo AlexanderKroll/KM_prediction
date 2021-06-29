@@ -28,16 +28,20 @@ conda install -c conda-forge py-xgboost
 
 ## Content
 
-There exist four different jupyter notebooks in the folder named "code".  All machine learning models in these jupyter notebooks can be either trained or our pretrained weights can be loaded from the folder "datasets/model_weights".
+There exist five different jupyter notebooks in the folder named "notebooks_and_code".  All machine learning models in these jupyter notebooks can be either trained or our pretrained weights can be loaded from the folder "datasets/model_weights".
 
-#### - Downloading and preprocessing BRENDA data.ipynb:
-Conatins all the necessary steps to download the data from BRENDA, to preprocess it and to split it into training, test, and validation set. Alternatively to executing the code in this notebook, our training, test, and validation sets (named "test_data.pkl", "training_data.pkl", and "validation_data.pkl"), which are stored in the folder named datasets, can be used for model training and evaluation.
+#### -Downloading and preprocessing BRENDA data.ipynb/Downloading and preprocessing Sabio-RK data.ipynb:
+Conatins all the necessary steps to download the data from BRENDA, to preprocess it and to split it into training, test, and validation set. 
+Alternatively to executing the code in this notebook, our training and test sets (named "test_data.pkl", "training_data.pkl"), which are stored in the folder named "./datasets/splits", can be used for model training and evaluation.
 
-#### - Training full model with enzyme and substrate information.ipynb:
-Contains all steps to train and validate our final model that uses enzyme and substrate information to predict KM values. It also contains the code to plot figure 4 of our paper.
+#### -Downloading and preprocessing Sabio-RK data.ipynb:
+Conatins all the necessary steps to download the data from Sabio_RK, preprocessing it and evaluating the gradient model that was trained on the BRENDA data.
 
-#### - Effect of additional features (MW and LogP) for the GNN.ipynb:
-To investigate the effect of the two additional features, molecular weight and LogP-coefficient, for the performance of the GNN, we trained and validated models with both, with only one, and with none of these features and compare the results. It also contains the code to plot figure 3 of our paper.
+#### - Training full model with enzyme and substrate information.ipynb
+Contains all steps to train and validate our final model that uses enzyme and substrate information to predict KM values. 
 
-#### - Training FCNN with ECFPs.ipynb:
-Contains the training of a fully-connected neural network (FCNN) with extended-connectivity fingerprints (ECFPs) as input and the code to plot figure 2 of our paper.
+#### - Effect of additional features (MW and LogP) for the GNN fingerprints.ipynb
+To investigate the effect of the two additional features, molecular weight and LogP-coefficient, we trained and validated models with both, with only one, and with none of these features and compare the results. 
+
+#### - Training NNs and gradient boosting models with molecular fingerprints.ipynb
+Contains the training of fully-connected neural networks (FCNNs), gradient boost models and elastic nets with extended-connectivity fingerprints (ECFPs) as input.
