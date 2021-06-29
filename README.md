@@ -30,7 +30,7 @@ conda install -c conda-forge py-xgboost
 
 There exist five different jupyter notebooks in the folder named "notebooks_and_code".  All machine learning models in these jupyter notebooks can be either trained or our pretrained weights can be loaded from the folder "datasets/model_weights".
 
-#### -Downloading and preprocessing BRENDA data.ipynb/Downloading and preprocessing Sabio-RK data.ipynb:
+#### -Downloading and preprocessing BRENDA data.ipynb:
 Conatins all the necessary steps to download the data from BRENDA, to preprocess it and to split it into training, test, and validation set. 
 Alternatively to executing the code in this notebook, our training and test sets (named "test_data.pkl", "training_data.pkl"), which are stored in the folder named "./datasets/splits", can be used for model training and evaluation.
 
