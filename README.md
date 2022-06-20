@@ -2,7 +2,8 @@
 This repository contains four Jupyter notebookes with code to reproduce the results and plots of the paper "Prediction of Michaelis constants KM from structural features".
 
 
-#### For people interested in using the trained KM prediction model, please use our repository [KM_prediction_function](https://github.com/AlexanderKroll/KM_prediction_function). This repository contains an easy-to-use python function for KM predictions. Please note that the model provided in the repository "KM_prediction_function" is slighly different to the one presented in our paper: Instead of the UniRep model, we are using the ESM-1b model to create enzyme representations. It has been shown that ESM-1b vectors contain more information about proteins' function and structure compared to UniRep vectors.
+
+### For people interested in using the trained KM prediction model, please use our repository [KM_prediction_function](https://github.com/AlexanderKroll/KM_prediction_function). This repository contains an easy-to-use python function for KM predictions. Please note that the model provided in the repository "KM_prediction_function" is slighly different to the one presented in our paper: Instead of the UniRep model, we are using the ESM-1b model to create enzyme representations. It has been shown that ESM-1b vectors contain more information about proteins' function and structure compared to UniRep vectors.
 
 
 
